@@ -1,5 +1,6 @@
 package com.api.inventory.security;
 
+import com.api.inventory.services.UserDetailsDataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -16,20 +16,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+  private final UserDetailsDataService _userDetailsDataService;
+  private final PasswordEncoder _encoder;
+
+  public WebSecurityConfiguration(UserDetailsDataService userDetailsDataService,
+      PasswordEncoder encoder) {
+    this._userDetailsDataService = userDetailsDataService;
+    this._encoder = encoder;
+  }
+
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    // auth.userDetailsService(usuarioService).passwordEncoder(passwordEncoder);
+    auth.userDetailsService(_userDetailsDataService).passwordEncoder(_encoder);
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable().authorizeRequests().anyRequest().permitAll();
-    // http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST,
-    // "/login").permitAll().anyRequest()
-    // .authenticated().and().addFilter(new
-    // JWTAutenticarFilter(authenticationManager()))
-    // .addFilter(new JWTValidarFilter(authenticationManager())).sessionManagement()
-    // .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
+        .anyRequest().authenticated().and()
+        .addFilter(new AuthenticationFilter(authenticationManager()))
+        .addFilter(new ValidationFilter(authenticationManager())).sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
   }
 
   @Bean
@@ -40,10 +47,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     source.registerCorsConfiguration("/**", corsConfiguration);
     return source;
   }
-
-  @Bean
-  public PasswordEncoder getPasswordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
 }

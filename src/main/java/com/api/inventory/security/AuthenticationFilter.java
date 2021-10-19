@@ -34,26 +34,28 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
   }
 
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-      throws AuthenticationException {
+  public Authentication attemptAuthentication(HttpServletRequest request,
+      HttpServletResponse response) throws AuthenticationException {
     try {
       UserModel _user = new ObjectMapper().readValue(request.getInputStream(), UserModel.class);
 
-      return _authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(_user.getLogin(), _user.getPassword(), new ArrayList<>()));
+      return _authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+          _user.getLogin(), _user.getPassword(), new ArrayList<>()));
+
     } catch (IOException e) {
       throw new RuntimeException("Falha ao autenticar o usuário", e);
     }
   }
 
   @Override
-  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-      Authentication authResult) throws IOException, ServletException {
+  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+      FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
     UserDetailsData _userDetailsData = (UserDetailsData) authResult.getPrincipal();
 
     String _token = JWT.create().withSubject(_userDetailsData.getUsername())
-        .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_AT)).sign(Algorithm.HMAC512(TOKEN_PASSWORD));
+        .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_AT))
+        .sign(Algorithm.HMAC512(TOKEN_PASSWORD));
 
     response.getWriter().write(_token);
     response.getWriter().flush();

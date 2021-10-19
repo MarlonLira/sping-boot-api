@@ -6,7 +6,6 @@ import com.api.inventory.models.UserModel;
 import com.api.inventory.services.interfaces.IUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,14 +33,4 @@ public class UserController {
   public ResponseEntity<Integer> save(@RequestBody UserModel model) {
     return ResponseEntity.ok(_service.save(model));
   }
-
-  @PostMapping("/login")
-  public ResponseEntity<String> Login(@RequestBody UserModel model) {
-    String _result = this._service.Login(model);
-    if (_result == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
-    }
-    return ResponseEntity.ok(_result);
-  }
-
 }
