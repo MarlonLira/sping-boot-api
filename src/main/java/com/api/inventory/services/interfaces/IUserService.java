@@ -8,7 +8,11 @@ public interface IUserService {
 
   public Integer save(UserModel model);
 
-  public String Login(UserModel model);
+  public void update(UserModel model) throws Exception;
+
+  public void delete(Integer id);
+
+  public String login(UserModel model);
 
   public List<UserModel> getAll();
 

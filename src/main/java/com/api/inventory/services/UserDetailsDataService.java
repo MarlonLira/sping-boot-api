@@ -1,11 +1,9 @@
 package com.api.inventory.services;
 
-import java.util.Optional;
-
 import com.api.inventory.models.UserModel;
 import com.api.inventory.repositories.IUserRepository;
 import com.api.inventory.security.data.UserDetailsData;
-
+import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,15 +19,16 @@ public class UserDetailsDataService implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
+  public UserDetails loadUserByUsername(String username)
+    throws UsernameNotFoundException {
     Optional<UserModel> _user = _repository.findByLogin(username);
 
     if (_user.isEmpty()) {
-      throw new UsernameNotFoundException("Usuário [" + username + "] não encontrado!");
+      throw new UsernameNotFoundException(
+        "Usuário [" + username + "] não encontrado!"
+      );
     }
 
     return new UserDetailsData(_user);
   }
-
 }
