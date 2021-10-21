@@ -1,12 +1,10 @@
 package com.api.inventory.services;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.api.inventory.models.UserModel;
 import com.api.inventory.repositories.IUserRepository;
 import com.api.inventory.services.interfaces.IUserService;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public String Login(UserModel model) {
+  public String login(UserModel model) {
     Optional<UserModel> _optUser = this._repository.findByLogin(model.getLogin());
     if (_optUser.isEmpty()) {
       return null;
@@ -51,4 +49,17 @@ public class UserService implements IUserService {
     return "valid";
   }
 
+  @Override
+  public void update(UserModel model) {
+    if (!model.getPassword().isEmpty()) {
+      model.setPassword(_encoder.encode(model.getPassword()));
+    }
+
+    _repository.save(model);
+  }
+
+  @Override
+  public void delete(Integer id) {
+    _repository.deleteById(id);
+  }
 }
