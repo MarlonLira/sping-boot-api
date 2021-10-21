@@ -42,6 +42,14 @@ public class BaseController<TService> {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(_response);
   }
 
+  protected ResponseEntity<Response> Ok() {
+    var _response = new Response();
+    _response.setCode(200);
+    _response.setDateTime(LocalDateTime.now());
+
+    return ResponseEntity.ok(_response);
+  }
+
   protected ResponseEntity<Response> Ok(Object value) {
     var _response = new Response();
     _response.setCode(200);

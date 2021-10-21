@@ -51,6 +51,10 @@ public class UserService implements IUserService {
 
   @Override
   public void update(UserModel model) {
+    if (!model.getPassword().isEmpty()) {
+      model.setPassword(_encoder.encode(model.getPassword()));
+    }
+
     _repository.save(model);
   }
 

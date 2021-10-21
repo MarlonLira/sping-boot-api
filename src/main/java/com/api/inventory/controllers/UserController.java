@@ -10,8 +10,11 @@ import com.api.inventory.services.interfaces.IUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,4 +37,19 @@ public class UserController extends BaseController<IUserService> {
     return Ok(this._service.save(_mapper.map(dto, UserModel.class)), HttpStatus.CREATED);
   }
 
+  @PutMapping("/")
+  public ResponseEntity<Response> update(@RequestBody @Valid UserDTO dto) {
+    this._service.update(_mapper.map(dto, UserModel.class));
+    return Ok();
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Response> delete(@PathVariable Integer id) {
+    if (id <= 0) {
+      return BadRequest("O id informado não é válido");
+    }
+
+    this._service.delete(id);
+    return Ok();
+  }
 }
