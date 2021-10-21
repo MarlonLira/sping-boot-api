@@ -23,14 +23,19 @@ public class BaseController<TService> {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {
+  public ResponseEntity<Response> handleValidationException(MethodArgumentNotValidException except) {
     Map<String, String> errors = new HashMap<>();
-    ex.getBindingResult().getAllErrors().forEach((error) -> {
+    except.getBindingResult().getAllErrors().forEach((error) -> {
       String fieldName = ((FieldError) error).getField();
       String errorMessage = error.getDefaultMessage();
       errors.put(fieldName, errorMessage);
     });
-    return errors;
+
+    var _response = new Response();
+    _response.setErrors(errors);
+    _response.setDateTime(LocalDateTime.now());
+    _response.setData(400);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(_response);
   }
 
   protected ResponseEntity<Response> Ok(Object value) {

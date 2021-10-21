@@ -2,8 +2,8 @@ package com.api.inventory.commons;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+
 import lombok.*;
 
 @Data
@@ -18,12 +18,9 @@ public class Response {
   private Integer code;
   private LocalDateTime dateTime;
   private String message;
-  private List<String> errors;
+  private Map<String, String> errors;
 
-  public List<String> getErrors() {
-    if (this.errors == null) {
-      this.errors = new ArrayList<>();
-    }
+  public Map<String, String> getErrors() {
     return errors;
   }
 }
