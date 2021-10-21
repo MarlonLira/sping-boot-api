@@ -22,12 +22,8 @@ public class ValidationFilter extends BasicAuthenticationFilter {
   }
 
   @Override
-  protected void doFilterInternal(
-    HttpServletRequest request,
-    HttpServletResponse response,
-    FilterChain chain
-  )
-    throws IOException, ServletException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
     String _attribute = request.getHeader(HEADER_ATTRIBUTE);
 
     if (_attribute == null || !_attribute.startsWith(ATTRIBUTE_PREFIX)) {
@@ -36,30 +32,19 @@ public class ValidationFilter extends BasicAuthenticationFilter {
     }
 
     String _token = _attribute.replace(ATTRIBUTE_PREFIX, "");
-    UsernamePasswordAuthenticationToken _authenticationToken = getAuthenticationToken(
-      _token
-    );
+    UsernamePasswordAuthenticationToken _authenticationToken = getAuthenticationToken(_token);
     SecurityContextHolder.getContext().setAuthentication(_authenticationToken);
     chain.doFilter(request, response);
   }
 
-  private UsernamePasswordAuthenticationToken getAuthenticationToken(
-    String token
-  ) {
-    String _user = JWT
-      .require(Algorithm.HMAC512(AuthenticationFilter.TOKEN_PASSWORD))
-      .build()
-      .verify(token)
-      .getSubject();
+  private UsernamePasswordAuthenticationToken getAuthenticationToken(String token) {
+    String _user = JWT.require(Algorithm.HMAC512(AuthenticationFilter.TOKEN_PASSWORD)).build().verify(token)
+        .getSubject();
 
     if (_user == null) {
       return null;
     }
 
-    return new UsernamePasswordAuthenticationToken(
-      _user,
-      null,
-      new ArrayList<>()
-    );
+    return new UsernamePasswordAuthenticationToken(_user, null, new ArrayList<>());
   }
 }

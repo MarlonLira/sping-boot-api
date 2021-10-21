@@ -34,8 +34,7 @@ public class UserService implements IUserService {
 
   @Override
   public String login(UserModel model) {
-    Optional<UserModel> _optUser =
-      this._repository.findByLogin(model.getLogin());
+    Optional<UserModel> _optUser = this._repository.findByLogin(model.getLogin());
     if (_optUser.isEmpty()) {
       return null;
     }
@@ -51,16 +50,8 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void update(UserModel model) throws Exception {
-    try {
-      if (model.getId() <= 0) {
-        return;
-      }
-
-      _repository.save(model);
-    } catch (Exception except) {
-      throw new Exception(except.getMessage());
-    }
+  public void update(UserModel model) {
+    _repository.save(model);
   }
 
   @Override

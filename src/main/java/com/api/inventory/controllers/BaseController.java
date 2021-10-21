@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.api.inventory.commons.Response;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,8 +18,11 @@ public class BaseController<TService> {
 
   protected final TService _service;
 
-  public BaseController(TService service) {
+  protected final ModelMapper _mapper;
+
+  public BaseController(TService service, ModelMapper mapper) {
     this._service = service;
+    this._mapper = mapper;
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
