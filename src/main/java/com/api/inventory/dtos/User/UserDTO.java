@@ -1,4 +1,4 @@
-package com.api.inventory.dtos;
+package com.api.inventory.dtos.User;
 
 import javax.validation.constraints.NotEmpty;
 

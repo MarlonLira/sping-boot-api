@@ -2,18 +2,19 @@ package com.api.inventory.services.interfaces;
 
 import java.util.List;
 
-import com.api.inventory.models.UserModel;
+import com.api.inventory.dtos.User.UserDTO;
+import com.api.inventory.dtos.User.UserUpdateDTO;
 
 public interface IUserService {
 
-  public Integer save(UserModel model);
+  public Integer save(UserDTO dto);
 
-  public void update(UserModel model);
+  public void update(UserUpdateDTO dto);
 
   public void delete(Integer id);
 
-  public String login(UserModel model);
+  public String login(UserDTO dto);
 
-  public List<UserModel> getAll();
+  public List<UserDTO> getAll();
 
 }
