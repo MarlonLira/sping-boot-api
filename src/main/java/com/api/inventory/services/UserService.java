@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.api.inventory.commons.Utils;
 import com.api.inventory.commons.Mapper.Mapper;
+import com.api.inventory.dtos.User.UserCreateDTO;
 import com.api.inventory.dtos.User.UserDTO;
 import com.api.inventory.dtos.User.UserUpdateDTO;
 import com.api.inventory.models.UserModel;
@@ -34,7 +35,7 @@ public class UserService extends BaseService<IUserRepository> implements IUserSe
   }
 
   @Override
-  public Integer save(UserDTO dto) {
+  public Integer save(UserCreateDTO dto) {
     var _model = _mapper.map(dto, UserModel.class);
     _model.setPassword(_encoder.encode(_model.getPassword()));
     return _repository.save(_model).getId();

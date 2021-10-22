@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.api.inventory.commons.MessageBundle;
 import com.api.inventory.commons.Response;
+import com.api.inventory.dtos.User.UserCreateDTO;
 import com.api.inventory.dtos.User.UserDTO;
 import com.api.inventory.dtos.User.UserUpdateDTO;
 import com.api.inventory.services.interfaces.IUserService;
@@ -33,7 +34,7 @@ public class UserController extends BaseController<IUserService> {
   }
 
   @PostMapping("/")
-  public ResponseEntity<Response> save(@RequestBody @Valid UserDTO dto) {
+  public ResponseEntity<Response> save(@RequestBody @Valid UserCreateDTO dto) {
     return Ok(this._service.save(dto), MessageBundle.ACCOUNT_CREATED, HttpStatus.CREATED);
   }
 

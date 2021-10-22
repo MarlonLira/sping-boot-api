@@ -1,7 +1,6 @@
 package com.api.inventory.dtos.User;
 
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Range;
+import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateDTO {
+public class UserCreateDTO {
 
-  @NotNull(message = "O id não foi informada!")
-  @Range(min = 1, message = "O id informado não é válido!")
-  private Integer id;
-
+  @NotBlank(message = "O login não foi informado")
   private String login;
 
+  @NotBlank(message = "A senha não foi informada")
   private String password;
 }
