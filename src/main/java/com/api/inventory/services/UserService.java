@@ -1,46 +1,56 @@
 package com.api.inventory.services;
 
+import java.util.List;
+import java.util.Optional;
+
+import com.api.inventory.commons.Utils;
+import com.api.inventory.commons.Mapper.Mapper;
+import com.api.inventory.dtos.User.UserCreateDTO;
+import com.api.inventory.dtos.User.UserDTO;
+import com.api.inventory.dtos.User.UserUpdateDTO;
 import com.api.inventory.models.UserModel;
 import com.api.inventory.repositories.IUserRepository;
 import com.api.inventory.services.interfaces.IUserService;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserService implements IUserService {
+import lombok.experimental.ExtensionMethod;
 
-  private final IUserRepository _repository;
+@ExtensionMethod({ Mapper.class })
+@Service
+public class UserService extends BaseService<IUserRepository> implements IUserService {
+
   private final PasswordEncoder _encoder;
 
-  @Autowired
-  public UserService(IUserRepository repository, PasswordEncoder encoder) {
-    this._repository = repository;
+  public UserService(IUserRepository repository, ModelMapper mapper, PasswordEncoder encoder) {
+    super(repository, mapper);
     this._encoder = encoder;
   }
 
   @Override
-  public List<UserModel> getAll() {
-    return _repository.findAll();
+  public List<UserDTO> getAll() {
+    return _mapper.mapList(_repository.findAll(), UserDTO.class);
   }
 
   @Override
-  public Integer save(UserModel model) {
-    model.setPassword(_encoder.encode(model.getPassword()));
-    return _repository.save(model).getId();
+  public Integer save(UserCreateDTO dto) {
+    var _model = _mapper.map(dto, UserModel.class);
+    _model.setPassword(_encoder.encode(_model.getPassword()));
+    return _repository.save(_model).getId();
   }
 
   @Override
-  public String login(UserModel model) {
-    Optional<UserModel> _optUser = this._repository.findByLogin(model.getLogin());
+  public String login(UserDTO dto) {
+    var _model = _mapper.map(dto, UserModel.class);
+    Optional<UserModel> _optUser = this._repository.findByLogin(_model.getLogin());
     if (_optUser.isEmpty()) {
       return null;
     }
 
     UserModel _user = _optUser.get();
-    boolean valid = _encoder.matches(model.getPassword(), _user.getPassword());
+    boolean valid = _encoder.matches(_model.getPassword(), _user.getPassword());
 
     if (!valid) {
       return null;
@@ -50,12 +60,22 @@ public class UserService implements IUserService {
   }
 
   @Override
-  public void update(UserModel model) {
-    if (!model.getPassword().isEmpty()) {
-      model.setPassword(_encoder.encode(model.getPassword()));
+  public void update(UserUpdateDTO dto) {
+    var _modelOp = _repository.findById(dto.getId());
+
+    if (_modelOp.isEmpty()) {
+      return;
     }
 
-    _repository.save(model);
+    if (!dto.getPassword().isEmpty()) {
+      dto.setPassword(_encoder.encode(dto.getPassword()));
+    }
+
+    var _model = _modelOp.get();
+
+    Utils.copyNonNullProperties(dto, _model);
+
+    _repository.save(_model);
   }
 
   @Override
