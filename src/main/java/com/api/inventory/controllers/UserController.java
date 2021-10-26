@@ -38,6 +38,11 @@ public class UserController extends BaseController<IUserService> {
     return Ok(this._service.save(dto), MessageBundle.ACCOUNT_CREATED, HttpStatus.CREATED);
   }
 
+  @PostMapping("/login/")
+  public ResponseEntity<Response> login(@RequestBody @Valid UserCreateDTO dto) {
+    return Ok(this._service.login(dto), MessageBundle.LOGIN_AUTHORIZED);
+  }
+
   @PutMapping("/")
   public ResponseEntity<Response> update(@RequestBody @Valid UserUpdateDTO dto) {
     this._service.update(dto);

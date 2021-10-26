@@ -14,7 +14,7 @@ public interface IUserService {
 
   public void delete(Integer id);
 
-  public String login(UserDTO dto);
+  public String login(UserCreateDTO dto);
 
   public List<UserDTO> getAll();
 

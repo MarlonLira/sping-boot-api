@@ -42,7 +42,7 @@ public class UserService extends BaseService<IUserRepository> implements IUserSe
   }
 
   @Override
-  public String login(UserDTO dto) {
+  public String login(UserCreateDTO dto) {
     var _model = _mapper.map(dto, UserModel.class);
     Optional<UserModel> _optUser = this._repository.findByLogin(_model.getLogin());
     if (_optUser.isEmpty()) {
