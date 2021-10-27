@@ -1,11 +1,17 @@
 package com.api.inventory.security;
 
+import com.api.inventory.commons.MessageBundle;
+import com.api.inventory.commons.Response;
 import com.api.inventory.models.UserModel;
 import com.api.inventory.security.data.UserDetailsData;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.gson.Gson;
+
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.FilterChain;
@@ -51,11 +57,21 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
       Authentication authResult) throws IOException, ServletException {
-    UserDetailsData _userDetailsData = (UserDetailsData) authResult.getPrincipal();
 
+    UserDetailsData _userDetailsData = (UserDetailsData) authResult.getPrincipal();
     String _token = JWT.create().withSubject(_userDetailsData.getUsername())
         .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_AT)).sign(Algorithm.HMAC512(TOKEN_PASSWORD));
 
+    var _response = new Response();
+    _response.setCode(200);
+    _response.setDateTime(new Date(System.currentTimeMillis()));
+    _response.setMessage(MessageBundle.LOGIN_AUTHORIZED);
+    _response.setData(_token);
+
+    _logger.info(MessageBundle.LOGIN_AUTHORIZED);
+    // String _responseJson = new Gson().toJson(_response);
+
+    response.setHeader("Authorization", "Bearer " + _token);
     response.getWriter().write(_token);
     response.getWriter().flush();
   }
