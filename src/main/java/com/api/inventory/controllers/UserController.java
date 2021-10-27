@@ -5,7 +5,6 @@ import javax.validation.Valid;
 import com.api.inventory.commons.MessageBundle;
 import com.api.inventory.commons.Response;
 import com.api.inventory.dtos.User.UserCreateDTO;
-import com.api.inventory.dtos.User.UserDTO;
 import com.api.inventory.dtos.User.UserUpdateDTO;
 import com.api.inventory.services.interfaces.IUserService;
 
